@@ -3,7 +3,7 @@
 @section('content')
 <div class="auth-container">
     <div class="logo">
-        <img src="{{ asset('assets/images/logo.png') }}">
+        <img src="{{ asset('assets/image/logo.jpeg') }}">
     </div>
 
     <div class="auth-card">
