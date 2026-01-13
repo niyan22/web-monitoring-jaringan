@@ -16,8 +16,9 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
+        @auth    
             @include('layouts.navigation')
-
+        @endauth
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
@@ -26,11 +27,6 @@
                     </div>
                 </header>
             @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
         </div>
     </body>
 </html>
