@@ -29,13 +29,13 @@ body {
 /* Logo Wrapper */
 .logo {
     position: relative;
-    right: -60px; /* 👉 geser ke kanan */
-    z-index: 2;   /* supaya di atas card */
+    right: -60px; 
+    z-index: 2;   
 }
 
 /* Logo Image */
 .logo img {
-    width: 380px;   /* 🔥 diperbesar */
+    width: 380px;   
     height: 380px;
     object-fit: cover;
     border-radius: 50%;
