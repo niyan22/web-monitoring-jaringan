@@ -16,22 +16,43 @@ body {
     border-right: 1px solid #eee;
 }
 
-.logo img {
-    width: 80px;
-    border-radius: 50%;
+.logo {
+    text-align: center;
+    padding: 24px 0;
 }
+
+.logo-img {
+    width: 90px;
+    border-radius: 50%;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
 
 .menu li {
-    list-style: none;
-    padding: 12px;
-    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 12px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-.menu .active {
-    background: #e8f4ee;
-    border-radius: 10px;
+.menu li:hover {
+    background: #e6f4ee;
+    transform: translateX(6px);
 }
+
+.menu li.active {
+    background: #e6f4ee;
+    font-weight: 600;
+}
+
 
 /* Main */
 .main {
@@ -80,3 +101,4 @@ body {
     padding: 20px;
     border-radius: 12px;
 }
+

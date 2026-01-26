@@ -1,14 +1,15 @@
 <aside class="sidebar">
     <div class="logo">
-        <img src="{{ asset('assets/image/logo.jpeg') }}">
-        <h3>BMKG</h3>
+        <img src="/assets/img/bmkg.jpeg" alt="BMKG" class="logo-img">
+        <h2>BMKG</h2>
     </div>
 
+
     <ul class="menu">
-        <li class="active">Dashboard</li>
-        <li>System</li>
-        <li>Network Traffic</li>
-        <li>Settings</li>
+        <li class="active"><i class="fa fa-home"></i> Dashboard</li>
+        <li><i class="fa fa-desktop"></i> System</li>
+        <li><i class="fa fa-signal"></i> Network Traffic</li>
+        <li><i class="fa fa-cog"></i> Settings</li>
     </ul>
 
     <form method="POST" action="{{ route('logout') }}">

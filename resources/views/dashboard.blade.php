@@ -82,11 +82,12 @@
         <p>Selamat Datang {{ Auth::user()->name }} ☀️</p>
         <h1>Dashboard</h1>
 
-        <div class="cards">
-            <div class="card">
-                <h4>CPU Load</h4>
-                <div class="big red">67%</div>
+        <div class="stat-card">
+            <h4>CPU Load</h4>
+            <div class="circle cpu">
+                <span>67%</span>
             </div>
+        </div>
             <div class="card">
                 <h4>Load RAM</h4>
                 <div class="big green">67%</div>
