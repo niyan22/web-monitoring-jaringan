@@ -5,10 +5,22 @@
 @section('content')
 <div class="network-container">
     <!-- Header -->
-    <div class="mb-4">
-        <h2 class="fw-bold mb-1">Network Traffic</h2>
-        <p class="text-muted">Monitor lalu lintas jaringan dan performa koneksi</p>
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-1">Network Traffic</h2>
+            <p class="text-muted">Monitor lalu lintas jaringan dan performa koneksi</p>
+        </div>
+        <a href="{{ route('network.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Data
+        </a>
     </div>
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
     <!-- Real-time Stats -->
     <div class="row g-3 mb-4">
@@ -119,45 +131,81 @@
     <!-- Connection List -->
     <div class="card mt-4">
         <div class="card-header bg-light border-0">
-            <h6 class="mb-0 fw-bold"><i class="bi bi-diagram-3 me-2"></i>Active Connections</h6>
+            <h6 class="mb-0 fw-bold"><i class="bi bi-diagram-3 me-2"></i>Riwayat Data Network Traffic</h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 small">
-                    <thead>
-                        <tr>
-                            <th>Protocol</th>
-                            <th>Local Address</th>
-                            <th>Remote Address</th>
-                            <th>State</th>
-                            <th>Speed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="badge bg-primary">TCP</span></td>
-                            <td>192.168.1.100:443</td>
-                            <td>8.8.8.8:53</td>
-                            <td><span class="badge bg-success">ESTABLISHED</span></td>
-                            <td>1.2 Mbps ↓ | 0.8 Mbps ↑</td>
-                        </tr>
-                        <tr>
-                            <td><span class="badge bg-primary">TCP</span></td>
-                            <td>192.168.1.100:8080</td>
-                            <td>192.168.1.50:45678</td>
-                            <td><span class="badge bg-success">ESTABLISHED</span></td>
-                            <td>0.5 Mbps ↓ | 0.3 Mbps ↑</td>
-                        </tr>
-                        <tr>
-                            <td><span class="badge bg-info">UDP</span></td>
-                            <td>192.168.1.100:5353</td>
-                            <td>224.0.0.251:5353</td>
-                            <td><span class="badge bg-success">ESTABLISHED</span></td>
-                            <td>0.1 Mbps ↓ | 0.1 Mbps ↑</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            @if($traffics->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 small">
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Interface</th>
+                                <th>Download</th>
+                                <th>Upload</th>
+                                <th>Packets</th>
+                                <th>Connections</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($traffics as $traffic)
+                                <tr>
+                                    <td>
+                                        <small>{{ $traffic->recorded_at->format('d M Y H:i') }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ $traffic->interface_name }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-arrow-down text-primary"></i>
+                                            <small>{{ number_format($traffic->download_speed, 2) }} Mbps</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-arrow-up text-success"></i>
+                                            <small>{{ number_format($traffic->upload_speed, 2) }} Mbps</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            Sent: {{ number_format($traffic->packets_sent) }}<br>
+                                            Recv: {{ number_format($traffic->packets_received) }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            Active: {{ $traffic->active_connections }}<br>
+                                            Established: {{ $traffic->established_connections }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('network.edit', $traffic) }}" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form action="{{ route('network.destroy', $traffic) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    {{ $traffics->links() }}
+                </div>
+            @else
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Belum ada data. <a href="{{ route('network.create') }}">Tambah data sekarang</a>
+                </div>
+            @endif
         </div>
     </div>
 </div>

@@ -5,10 +5,22 @@
 @section('content')
 <div class="system-container">
     <!-- Header -->
-    <div class="mb-4">
-        <h2 class="fw-bold mb-1">System Monitoring</h2>
-        <p class="text-muted">Monitor performa sistem server Anda secara real-time</p>
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-1">System Monitoring</h2>
+            <p class="text-muted">Monitor performa sistem server Anda secara real-time</p>
+        </div>
+        <a href="{{ route('system.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Data
+        </a>
     </div>
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
     <!-- Quick Stats -->
     <div class="row g-3 mb-4">
@@ -115,44 +127,81 @@
         </div>
     </div>
 
-    <!-- Processes -->
+    <!-- Data Metrics Table -->
     <div class="card mt-4">
         <div class="card-header bg-light border-0">
-            <h6 class="mb-0 fw-bold"><i class="bi bi-list-task me-2"></i>Top Processes</h6>
+            <h6 class="mb-0 fw-bold"><i class="bi bi-table me-2"></i>Riwayat Data Sistem</h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Process</th>
-                            <th>CPU %</th>
-                            <th>Memory %</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><i class="bi bi-chrome me-2"></i>Chrome</td>
-                            <td>12.5%</td>
-                            <td>8.3%</td>
-                            <td><span class="badge bg-success">Running</span></td>
-                        </tr>
-                        <tr>
-                            <td><i class="bi bi-terminal me-2"></i>Node.js</td>
-                            <td>8.2%</td>
-                            <td>6.1%</td>
-                            <td><span class="badge bg-success">Running</span></td>
-                        </tr>
-                        <tr>
-                            <td><i class="bi bi-database me-2"></i>MySQL</td>
-                            <td>5.1%</td>
-                            <td>15.2%</td>
-                            <td><span class="badge bg-success">Running</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            @if($metrics->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 small">
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>CPU Load</th>
+                                <th>Memory</th>
+                                <th>Disk</th>
+                                <th>Processor</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($metrics as $metric)
+                                <tr>
+                                    <td>
+                                        <small>{{ $metric->recorded_at->format('d M Y H:i') }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="progress" style="width: 80px; height: 20px;">
+                                                <div class="progress-bar bg-danger" style="width: {{ $metric->cpu_load }}%"></div>
+                                            </div>
+                                            <span>{{ number_format($metric->cpu_load, 1) }}%</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            {{ number_format($metric->memory_used, 1) }}/{{ number_format($metric->memory_total, 1) }} GB
+                                            <br>
+                                            <span class="badge bg-warning">{{ number_format($metric->memory_percentage, 1) }}%</span>
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            {{ number_format($metric->disk_used, 1) }}/{{ number_format($metric->disk_total, 1) }} GB
+                                            <br>
+                                            <span class="badge bg-info">{{ number_format($metric->disk_percentage, 1) }}%</span>
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <small>{{ $metric->processor_name }}<br>({{ $metric->processor_cores }} cores)</small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('system.edit', $metric) }}" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form action="{{ route('system.destroy', $metric) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    {{ $metrics->links() }}
+                </div>
+            @else
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Belum ada data. <a href="{{ route('system.create') }}">Tambah data sekarang</a>
+                </div>
+            @endif
         </div>
     </div>
 </div>
