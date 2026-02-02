@@ -1,132 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard Monitoring Jaringan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@section('title', 'Dashboard')
 
-    <style>
-        body {
-            background-color: #f7f8fa;
-        }
-        .sidebar {
-            width: 260px;
-            min-height: 100vh;
-            background: #ffffff;
-            border-right: 1px solid #e5e7eb;
-        }
-        .sidebar a {
-            color: #333;
-            text-decoration: none;
-        }
-        .sidebar .active {
-            background: #e7f3ed;
-            border-radius: 10px;
-        }
-        .card-box {
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-    </style>
-</head>
-<body>
-
-<div class="d-flex">
-    <!-- Sidebar -->
-    <div class="sidebar p-4">
-        <div class="text-center mb-5">
-            <img src="public/assets/image/logo.jpeg" width="80">
-            <h5 class="mt-3 fw-bold">BMKG</h5>
+@section('content')
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h6 class="text-muted">Selamat Datang {{ Auth::user()->name }} 👋</h6>
+            <h2 class="fw-bold">Dashboard</h2>
         </div>
-
-        <ul class="nav flex-column gap-2">
-            <li class="nav-item active p-3">
-                <i class="bi bi-grid"></i> Dashboard
-            </li>
-            <li class="nav-item p-3">
-                <i class="bi bi-pc-display"></i> System
-            </li>
-            <li class="nav-item p-3">
-                <i class="bi bi-graph-up"></i> Network Traffic
-            </li>
-            <li class="nav-item p-3">
-                <i class="bi bi-gear"></i> Settings
-            </li>
-            <li class="nav-item p-3 mt-5 text-danger">
-                <i class="bi bi-box-arrow-left"></i> Sign Out
-            </li>
-        </ul>
+        <div class="text-end">
+            <p class="text-muted mb-0">Monitoring Jaringan BMKG</p>
+        </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="flex-grow-1 p-4">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h6>Selamat Datang Admin! ☀️</h6>
-                <h2 class="fw-bold">Dashboard</h2>
+        <!-- Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">CPU Load</h6>
+                        <canvas id="cpuChart" style="max-height: 200px;"></canvas>
+                    </div>
+                </div>
             </div>
-            <div class="d-flex align-items-center gap-3">
-                <i class="bi bi-search"></i>
-                <i class="bi bi-bell"></i>
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-person-circle fs-4"></i>
-                    <div>
-                        <strong>admin</strong><br>
-                        <small class="text-muted">admin.com</small>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">RAM Load</h6>
+                        <canvas id="ramChart" style="max-height: 200px;"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Cards -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
-                <div class="card card-box p-4">
-                    <h6 class="fw-bold">CPU Load</h6>
-                    <canvas id="cpuChart"></canvas>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">Online Devices</h6>
+                        <h3 class="text-success fw-bold">18</h3>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card card-box p-4">
-                    <h6 class="fw-bold">Load RAM</h6>
-                    <canvas id="ramChart"></canvas>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">Offline Devices</h6>
+                        <h3 class="text-danger fw-bold">2</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">AVG Memory</h6>
+                        <h3 class="fw-bold">35%</h3>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="card card-box p-4 text-center">
-                    <h6>Online Device</h6>
-                    <h2 class="text-success fw-bold">18</h2>
-                </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">Network Traffic</h5>
+                <canvas id="trafficChart" style="max-height: 300px;"></canvas>
             </div>
-            <div class="col-md-4">
-                <div class="card card-box p-4 text-center">
-                    <h6>Offline Device</h6>
-                    <h2 class="text-danger fw-bold">2</h2>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-box p-4 text-center">
-                    <h6>AVG Memory</h6>
-                    <h2 class="fw-bold">35%</h2>
-                </div>
-            </div>
-        </div>
-
-        <!-- Traffic Chart -->
-        <div class="card card-box p-4">
-            <h5 class="fw-bold mb-3">Network Traffic Basic</h5>
-            <canvas id="trafficChart"></canvas>
         </div>
     </div>
 </div>
@@ -136,16 +76,24 @@
         type: 'doughnut',
         data: {
             labels: ['Used', 'Free'],
-            datasets: [{ data: [67, 33] }]
-        }
+            datasets: [{ 
+                data: [67, 33],
+                backgroundColor: ['#dc2626', '#e5e7eb']
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: true }
     });
 
     new Chart(document.getElementById('ramChart'), {
         type: 'doughnut',
         data: {
             labels: ['Used', 'Free'],
-            datasets: [{ data: [67, 33] }]
-        }
+            datasets: [{ 
+                data: [65, 35],
+                backgroundColor: ['#16a34a', '#e5e7eb']
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: true }
     });
 
     new Chart(document.getElementById('trafficChart'), {
@@ -153,12 +101,31 @@
         data: {
             labels: ['15:39','15:40','15:41','15:42'],
             datasets: [
-                { label: 'Download', data: [1.2, 1.6, 1.1, 1.8] },
-                { label: 'Upload', data: [0.8, 1.2, 0.9, 1.4] }
+                { 
+                    label: 'Download', 
+                    data: [1.2, 1.6, 1.1, 1.8],
+                    borderColor: '#3b82f6',
+                    tension: 0.4
+                },
+                { 
+                    label: 'Upload', 
+                    data: [0.8, 1.2, 0.9, 1.4],
+                    borderColor: '#10b981',
+                    tension: 0.4
+                }
             ]
-        }
+        },
+        options: { responsive: true, maintainAspectRatio: true }
     });
 </script>
 
-</body>
-</html>
+@style
+<style>
+    .dashboard-container {
+        padding: 2rem;
+        background-color: #f7f8fa;
+        min-height: calc(100vh - 80px);
+    }
+</style>
+@endstyle
+@endsection

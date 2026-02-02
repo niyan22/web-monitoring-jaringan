@@ -1,4 +1,4 @@
-@extends('layouts.app')
+<!-- @extends('layouts.app')
 
 @section('content')
 <style>
@@ -61,9 +61,9 @@
     .red { color: #c0392b; }
 </style>
 
-<div class="wrapper">
+<div class="wrapper"> -->
 
-    <!-- Sidebar -->
+    <!-- /* Sidebar
     <div class="sidebar">
         <h3>BMKG</h3>
         <a href="#" class="active">Dashboard</a>
@@ -77,7 +77,7 @@
         </form>
     </div>
 
-    <!-- Main -->
+    Main
     <div class="main">
         <p>Selamat Datang {{ Auth::user()->name }} ☀️</p>
         <h1>Dashboard</h1>
@@ -118,4 +118,4 @@
     </div>
 
 </div>
-@endsection
+@endsection  */ -->

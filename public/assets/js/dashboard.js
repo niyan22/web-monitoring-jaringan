@@ -1,4 +1,4 @@
-// ===== Ambil Element =====
+/*// ===== Ambil Element =====
 const cpuInput = document.getElementById('cpuInput');
 const ramInput = document.getElementById('ramInput');
 const trafficInput = document.getElementById('trafficInput');
@@ -37,3 +37,4 @@ function updateDashboard() {
 cpuInput.addEventListener('input', updateDashboard);
 ramInput.addEventListener('input', updateDashboard);
 trafficInput.addEventListener('input', updateDashboard);
+*/

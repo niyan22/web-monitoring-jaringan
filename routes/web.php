@@ -7,9 +7,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard.index');
-})->middleware(['auth'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', fn() => view('dashboard.index'))->name('dashboard');
+    Route::get('/system', fn() => view('system.index'))->name('system');
+    Route::get('/network', fn() => view('network.index'))->name('network');
+    Route::get('/settings', fn() => view('settings.index'))->name('settings');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
