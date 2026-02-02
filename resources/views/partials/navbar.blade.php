@@ -135,7 +135,7 @@
                 </div>
                 <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
                     <div class="list-group list-group-flush" id="notificationsList">
-                        <a href="#" class="list-group-item list-group-item-action border-0 py-3">
+                        <button type="button" class="list-group-item list-group-item-action border-0 py-3 text-start notification-item" data-type="system" data-url="/system">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2 mb-2">
@@ -147,9 +147,9 @@
                                     <small class="text-muted">5 menit yang lalu</small>
                                 </div>
                             </div>
-                        </a>
+                        </button>
 
-                        <a href="#" class="list-group-item list-group-item-action border-0 py-3 border-top">
+                        <button type="button" class="list-group-item list-group-item-action border-0 py-3 text-start border-top notification-item" data-type="network" data-url="/network">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2 mb-2">
@@ -161,9 +161,9 @@
                                     <small class="text-muted">15 menit yang lalu</small>
                                 </div>
                             </div>
-                        </a>
+                        </button>
 
-                        <a href="#" class="list-group-item list-group-item-action border-0 py-3 border-top">
+                        <button type="button" class="list-group-item list-group-item-action border-0 py-3 text-start border-top notification-item" data-type="disk" data-url="/system">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2 mb-2">
@@ -175,7 +175,7 @@
                                     <small class="text-muted">1 jam yang lalu</small>
                                 </div>
                             </div>
-                        </a>
+                        </button>
                     </div>
                 </div>
                 <div class="modal-footer border-top">
@@ -215,85 +215,145 @@
 </nav>
 
 <script>
-    // Logout Confirmation
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
-        logoutModal.show();
-    });
-
-    // Search Functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const query = this.value.toLowerCase();
-        const resultsDiv = document.getElementById('searchResults');
-
-        if (query.length === 0) {
-            resultsDiv.innerHTML = '<p class="text-muted text-center">Mulai ketik untuk mencari...</p>';
-            return;
-        }
-
-        // Dummy search results
-        const items = [
-            { type: 'System', name: 'CPU Monitoring', icon: 'cpu', url: '/system' },
-            { type: 'System', name: 'Memory Usage', icon: 'memory', url: '/system' },
-            { type: 'Network', name: 'Network Traffic', icon: 'wifi', url: '/network' },
-            { type: 'Network', name: 'Bandwidth Monitor', icon: 'graph-up', url: '/network' },
-            { type: 'Settings', name: 'System Settings', icon: 'gear', url: '/settings' }
-        ];
-
-        const filtered = items.filter(item => 
-            item.name.toLowerCase().includes(query) || 
-            item.type.toLowerCase().includes(query)
-        );
-
-        if (filtered.length === 0) {
-            resultsDiv.innerHTML = '<p class="text-muted text-center">Tidak ada hasil ditemukan.</p>';
-            return;
-        }
-
-        let html = '<div class="list-group list-group-flush">';
-        filtered.forEach(item => {
-            html += `
-                <a href="${item.url}" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
-                    <i class="bi bi-${item.icon}"></i>
-                    <div>
-                        <strong>${item.name}</strong>
-                        <small class="text-muted d-block">${item.type}</small>
-                    </div>
-                </a>
-            `;
-        });
-        html += '</div>';
-        resultsDiv.innerHTML = html;
-    });
-
-    // Clear Notifications
-    document.getElementById('clearNotifications').addEventListener('click', function() {
-        document.getElementById('notificationsList').innerHTML = '<p class="text-muted text-center py-3">No notifications</p>';
-        document.getElementById('notificationCount').textContent = '0';
+    // Initialize on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
         
-        const toast = document.createElement('div');
-        toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed bottom-0 end-0 m-3';
-        toast.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body">
-                    All notifications cleared!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        `;
-        document.body.appendChild(toast);
-        const bsToast = new bootstrap.Toast(toast);
-        bsToast.show();
-        toast.addEventListener('hidden.bs.toast', () => toast.remove());
-    });
+        // Logout Confirmation
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
+                logoutModal.show();
+            });
+        }
 
-    // Search Modal Enter Key
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const results = document.querySelectorAll('#searchResults .list-group-item');
-            if (results.length > 0) {
-                results[0].click();
-            }
+        // Notification items click handler
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    // Close modal first
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('notificationsModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    // Navigate after a short delay
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 300);
+                }
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const query = this.value.toLowerCase().trim();
+                const resultsDiv = document.getElementById('searchResults');
+
+                if (query.length === 0) {
+                    resultsDiv.innerHTML = '<p class="text-muted text-center">Mulai ketik untuk mencari...</p>';
+                    return;
+                }
+
+                // Dummy search results
+                const items = [
+                    { type: 'System', name: 'CPU Monitoring', icon: 'cpu', url: '/system' },
+                    { type: 'System', name: 'Memory Usage', icon: 'memory', url: '/system' },
+                    { type: 'Network', name: 'Network Traffic', icon: 'wifi', url: '/network' },
+                    { type: 'Network', name: 'Bandwidth Monitor', icon: 'graph-up', url: '/network' },
+                    { type: 'Settings', name: 'System Settings', icon: 'gear', url: '/settings' }
+                ];
+
+                const filtered = items.filter(item => 
+                    item.name.toLowerCase().includes(query) || 
+                    item.type.toLowerCase().includes(query)
+                );
+
+                if (filtered.length === 0) {
+                    resultsDiv.innerHTML = '<p class="text-muted text-center">Tidak ada hasil ditemukan.</p>';
+                    return;
+                }
+
+                let html = '<div class="list-group list-group-flush">';
+                filtered.forEach(item => {
+                    html += `
+                        <button type="button" class="list-group-item list-group-item-action d-flex align-items-center gap-2 text-start search-result-item" data-url="${item.url}">
+                            <i class="bi bi-${item.icon}"></i>
+                            <div>
+                                <strong>${item.name}</strong>
+                                <small class="text-muted d-block">${item.type}</small>
+                            </div>
+                        </button>
+                    `;
+                });
+                html += '</div>';
+                resultsDiv.innerHTML = html;
+
+                // Add event listeners to new search result items
+                document.querySelectorAll('.search-result-item').forEach(resultItem => {
+                    resultItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const url = this.getAttribute('data-url');
+                        if (url) {
+                            // Close modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
+                            if (modal) {
+                                modal.hide();
+                            }
+                            // Navigate
+                            setTimeout(() => {
+                                window.location.href = url;
+                            }, 300);
+                        }
+                    });
+                });
+            });
+
+            // Search Modal Enter Key
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const results = document.querySelectorAll('#searchResults .search-result-item');
+                    if (results.length > 0) {
+                        results[0].click();
+                    }
+                }
+            });
+        }
+
+        // Clear Notifications
+        const clearNotificationsBtn = document.getElementById('clearNotifications');
+        if (clearNotificationsBtn) {
+            clearNotificationsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                document.getElementById('notificationsList').innerHTML = '<p class="text-muted text-center py-3">No notifications</p>';
+                document.getElementById('notificationCount').textContent = '0';
+                
+                const toast = document.createElement('div');
+                toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed bottom-0 end-0 m-3';
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+                toast.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            All notifications cleared!
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+                toast.addEventListener('hidden.bs.toast', () => toast.remove());
+            });
         }
     });
 </script>
