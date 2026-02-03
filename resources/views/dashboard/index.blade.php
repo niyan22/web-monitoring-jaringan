@@ -119,7 +119,6 @@
     });
 </script>
 
-@style
 <style>
     .dashboard-container {
         padding: 2rem;
@@ -127,5 +126,4 @@
         min-height: calc(100vh - 80px);
     }
 </style>
-@endstyle
 @endsection

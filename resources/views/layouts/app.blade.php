@@ -18,6 +18,15 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script>
+        (function(){
+            const _origAlert = window.alert;
+            window.alert = function(msg){
+                try{ if(String(msg).includes('JS MASUK')) return; }catch(e){}
+                return _origAlert.apply(this, arguments);
+            };
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -79,7 +88,11 @@
         }
 
         .logo {
-            text-align: center;
+            /* center logo block */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 2rem;
             animation: slideInLeft 0.5s ease-out;
         }
@@ -87,6 +100,10 @@
         .logo img {
             width: 60px;
             height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .logo h6 {
@@ -399,6 +416,25 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Logout Confirmation
+        function showLogoutConfirm() {
+            if (confirm('Apakah Anda yakin ingin keluar dari aplikasi ini?\n\nAnda dapat login kembali kapan saja menggunakan akun Anda.')) {
+                // Create and submit a form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ route("logout") }}';
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                form.appendChild(csrfToken);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
         // Dark Mode Toggle
         const toggleDarkBtn = document.getElementById('toggleDark');
         const htmlElement = document.documentElement;

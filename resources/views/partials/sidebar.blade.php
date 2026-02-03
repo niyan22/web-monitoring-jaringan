@@ -43,12 +43,9 @@
 
     {{-- Logout --}}
     <div class="logout-section">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-outline-danger">
-                <i class="bi bi-box-arrow-left"></i>
-                <span class="nav-text">Sign Out</span>
-            </button>
-        </form>
+        <button type="button" class="btn btn-outline-danger w-100" onclick="showLogoutModal(event)">
+            <i class="bi bi-box-arrow-left"></i>
+            <span class="nav-text">Sign Out</span>
+        </button>
     </div>
 </aside>
