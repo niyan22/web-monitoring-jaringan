@@ -13,9 +13,28 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
+
+        <!-- Profile Photo -->
+        <div>
+            <x-input-label for="photo" :value="__('Profile Photo')" />
+            <div class="mt-2 flex items-center gap-4">
+                @if ($user->photo)
+                    <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile Photo" class="h-20 w-20 rounded-full object-cover">
+                @else
+                    <div class="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center">
+                        <i class="bi bi-person text-gray-400 text-2xl"></i>
+                    </div>
+                @endif
+                <div class="flex-1">
+                    <input id="photo" name="photo" type="file" class="form-control" accept="image/*" />
+                    <p class="text-xs text-gray-500 mt-1">{{ __('JPG, PNG, GIF. Max 2MB') }}</p>
+                    <x-input-error class="mt-2" :messages="$errors->get('photo')" />
+                </div>
+            </div>
+        </div>
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -45,6 +64,18 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="phone" :value="__('Phone')" />
+            <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full" :value="old('phone', $user->phone)" autocomplete="tel" placeholder="+62..." />
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+        </div>
+
+        <div>
+            <x-input-label for="bio" :value="__('Bio')" />
+            <textarea id="bio" name="bio" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" rows="4" placeholder="Tell us about yourself...">{{ old('bio', $user->bio) }}</textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('bio')" />
         </div>
 
         <div class="flex items-center gap-4">

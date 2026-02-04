@@ -33,8 +33,8 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}" 
-               href="{{ route('settings') }}">
+            <a class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}" 
+               href="{{ route('settings.index') }}">
                 <i class="bi bi-gear-fill"></i>
                 <span class="nav-text">Settings</span>
             </a>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\NetworkController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,7 +27,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/network/{networkTraffic}', [NetworkController::class, 'update'])->name('network.update');
     Route::delete('/network/{networkTraffic}', [NetworkController::class, 'destroy'])->name('network.destroy');
     
-    Route::get('/settings', fn() => view('settings.index'))->name('settings');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/save-all', [SettingsController::class, 'saveAll'])->name('settings.saveAll');
 });
 
 Route::middleware('auth')->group(function () {
